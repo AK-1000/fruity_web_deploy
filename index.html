@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base href="/" />
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+    <meta
+      name="description"
+      content="Fruity Admin Panel - Delicious Management"
+    />
+
+    <!-- Preload critical assets -->
+    <link rel="preload" href="assets/images/png/popsicle.png" as="image" />
+    <link rel="preload" href="assets/images/png/popsicles.png" as="image" />
+    <link rel="preload" href="assets/images/jpg/bg.jpg" as="image" />
+
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+
+    <!-- iOS meta tags & icons -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Fruity Admin" />
+    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.ico" />
+
+    <title>Fruity Admin Panel</title>
+    <link rel="manifest" href="manifest.json" />
+
+    <style>
+      /* Custom Loading Animation */
+      :root {
+        --primary-color: #ff6b6b;
+        --secondary-color: #ff8e53;
+      }
+
+      .loader-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+      }
+
+      .loader {
+        width: 80px;
+        height: 80px;
+        position: relative;
+      }
+
+      .loader-inner {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 4px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s linear infinite;
+      }
+
+      .loader-logo {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        top: 15px;
+        left: 15px;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(0.95);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(0.95);
+          opacity: 0.8;
+        }
+      }
+
+      .loading-text {
+        position: absolute;
+        bottom: 20%;
+        color: white;
+        font-family: Arial, sans-serif;
+        font-size: 1.2em;
+        letter-spacing: 2px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loader-container" id="loader">
+      <div class="loader">
+        <div class="loader-inner"></div>
+        <!--
+        <img
+          src="assets/images/png/popsicle.png"
+          class="loader-logo"
+          alt="Loading..."
+        /> -->
+      </div>
+      <div class="loading-text">Preparing Your Fruity Experience...</div>
+    </div>
+
+    <!-- Add Flutter initialization script -->
+    <script src="flutter.js" defer></script>
+
+    <script>
+      // Preload critical assets
+      const preloadImages = [
+        "assets/images/jpg/bg_2.jpg",
+        "assets/images/jpg/bg-3.webp",
+        "assets/images/jpg/bg-4.webp",
+        "assets/images/jpg/bg-5.jpg",
+        "assets/images/png/popsicles.png",
+        "assets/images/png/user-account.png",
+        "assets/images/jpg/bg.jpg",
+      ];
+
+      preloadImages.forEach((img) => {
+        new Image().src = img;
+      });
+
+      // Flutter initialization
+      window.addEventListener("load", function (ev) {
+        const loader = document.getElementById("loader");
+        const serviceWorkerVersion = "1.0";
+        // Initialize Flutter
+        _flutter.loader
+          .loadEntrypoint({
+            serviceWorker: {
+              serviceWorkerVersion: serviceWorkerVersion,
+              serviceWorkerUrl:
+                "flutter_service_worker.js?v=" + serviceWorkerVersion,
+            },
+          })
+          .then(function (engineInitializer) {
+            return engineInitializer.initializeEngine();
+          })
+          .then(function (appRunner) {
+            // Hide loader when Flutter is ready
+            window.addEventListener("flutter-first-frame", function () {
+              loader.style.opacity = "0";
+              setTimeout(() => (loader.style.display = "none"), 500);
+            });
+            return appRunner.runApp();
+          });
+      });
+    </script>
+  </body>
+</html>
